@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bairro {
+  ID_Bairro   Int          @id @default(autoincrement())
+  Nome_Bairro String       @db.VarChar(100)
+  ID_Regiao   Int?
+  regiao      regiao?      @relation(fields: [ID_Regiao], references: [ID_Regiao], onUpdate: NoAction, map: "bairro_ibfk_1")
+  logradouro  logradouro[]
+
+  @@index([ID_Regiao], map: "ID_Regiao")
+}
+
+model bo {
+  ID_BO       Int           @id @default(autoincrement())
+  ID_Vitima   Int?
+  Data_BO     DateTime      @db.Date
+  Ano_BO      Int
+  Num_BO      String        @db.VarChar(20)
+  ID_Crime    Int?
+  Rubrica     String        @db.VarChar(100)
+  ID_CEP      Int?
+  vitima      vitima?       @relation(fields: [ID_Vitima], references: [ID_Vitima], onUpdate: NoAction, map: "bo_ibfk_1")
+  crime       crime?        @relation(fields: [ID_Crime], references: [ID_Crime], onUpdate: NoAction, map: "bo_ibfk_2")
+  cep         cep?          @relation(fields: [ID_CEP], references: [ID_CEP], onUpdate: NoAction, map: "bo_ibfk_3")
+  contem      contem[]
+  encontra_se encontra_se[]
+  seccional   seccional[]
+
+  @@index([ID_CEP], map: "ID_CEP")
+  @@index([ID_Crime], map: "ID_Crime")
+  @@index([ID_Vitima], map: "ID_Vitima")
+}
+
+model cep {
+  ID_CEP        Int         @id @default(autoincrement())
+  ID_Logradouro Int?
+  Num_CEP       Int?
+  bo            bo[]
+  logradouro    logradouro? @relation(fields: [ID_Logradouro], references: [ID_Logradouro], onUpdate: NoAction, map: "cep_ibfk_1")
+
+  @@index([ID_Logradouro], map: "ID_Logradouro")
+}
+
+model contem {
+  ID_BO    Int
+  ID_Crime Int
+  bo       bo    @relation(fields: [ID_BO], references: [ID_BO], onDelete: Cascade, onUpdate: NoAction, map: "contem_ibfk_1")
+  crime    crime @relation(fields: [ID_Crime], references: [ID_Crime], onDelete: Cascade, onUpdate: NoAction, map: "contem_ibfk_2")
+
+  @@id([ID_BO, ID_Crime])
+  @@index([ID_Crime], map: "ID_Crime")
+}
+
+model crime {
+  ID_Crime        Int       @id @default(autoincrement())
+  Descricao_Crime String    @db.Text
+  Local_Crime     String    @db.VarChar(200)
+  DataHora_Crime  DateTime? @db.DateTime(0)
+  bo              bo[]
+  contem          contem[]
+}
+
+model encontra_se {
+  ID_BO     Int
+  ID_Vitima Int
+  bo        bo     @relation(fields: [ID_BO], references: [ID_BO], onDelete: Cascade, onUpdate: NoAction, map: "encontra_se_ibfk_1")
+  vitima    vitima @relation(fields: [ID_Vitima], references: [ID_Vitima], onDelete: Cascade, onUpdate: NoAction, map: "encontra_se_ibfk_2")
+
+  @@id([ID_BO, ID_Vitima])
+  @@index([ID_Vitima], map: "ID_Vitima")
+}
+
+model logradouro {
+  ID_Logradouro   Int     @id @default(autoincrement())
+  Nome_Logradouro String  @db.VarChar(150)
+  Num_Logradouro  Int?
+  ID_Bairro       Int?
+  cep             cep[]
+  bairro          bairro? @relation(fields: [ID_Bairro], references: [ID_Bairro], onUpdate: NoAction, map: "logradouro_ibfk_1")
+
+  @@index([ID_Bairro], map: "ID_Bairro")
+}
+
+model regiao {
+  ID_Regiao      Int      @id @default(autoincrement())
+  Nome_Regiao    String   @db.VarChar(100)
+  Nome_Cidade    String   @db.VarChar(100)
+  Nome_Municipio String   @db.VarChar(100)
+  bairro         bairro[]
+}
+
+model seccional {
+  ID_Seccional      Int    @id @default(autoincrement())
+  Nome_Seccional    String @db.VarChar(100)
+  Nome_Departamento String @db.VarChar(100)
+  Nome_Delegacia    String @db.VarChar(100)
+  ID_BO             Int?
+  bo                bo?    @relation(fields: [ID_BO], references: [ID_BO], onUpdate: NoAction, map: "seccional_ibfk_1")
+
+  @@index([ID_BO], map: "ID_BO")
+}
+
+model vitima {
+  ID_Vitima   Int           @id @default(autoincrement())
+  Nome_Vitima String?       @db.VarChar(150)
+  RG          Int?
+  bo          bo[]
+  encontra_se encontra_se[]
+}
