@@ -81,12 +81,9 @@ export default function Main() {
                         <div className="flex flex-col gap-4">
                             <p className="text-white font-semibold text-9xl cursor-default">SIC</p>
                             <p className="text-zinc-300 text-lg cursor-default">Sistema de Informação Criminal</p>
-                            <div className="flex gap-4 justify-between">
+                            <div className="flex lg:w-[75%]">
                                 <p className="text-white border rounded-lg p-3 sm:p-5 border-zinc-500 cursor-default transition-all">
                                     Sistema de mapeamento de registros de boletins de ocorrência &quot;B.O.&quot; por regiões, permitindo visualizar e comparar os níveis de criminalidade em diferentes áreas urbanas.
-                                </p>
-                                <p className="text-white border rounded-lg p-3 sm:p-5 border-zinc-500 cursor-default transition-all">
-                                    <span className="font-bold">Membros</span>: Lucas Rodrigo, Jhonatan Teles, Joao Carlos, Gustavo Henrique, Eder Vieira, Joao Victor, Joao Vitor, Caio Augusto, Guilherme Barion e Kaua Merces.
                                 </p>
                             </div>
                         </div>
